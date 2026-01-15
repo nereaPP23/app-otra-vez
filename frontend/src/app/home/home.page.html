@@ -1,0 +1,35 @@
+
+<ion-header>
+  <ion-toolbar> <!--Crea el contenedor de la barra de herramientas.-->
+    <ion-title>Gestor de Tareas</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+
+  <!--Donde el usuario escribe las tareas nuevas.-->
+  <ion-item>
+    <!--Conecta el input con la variable de tu archivo home.page.ts-->
+    <ion-input
+      [(ngModel)]="newTaskTitle"
+      placeholder="Nueva tarea"></ion-input>
+    <ion-button (click)="addTask()">Añadir</ion-button>
+  </ion-item>
+  <ion-list>
+    <!--Es un bucle "para cada uno". Si tienes 10 tareas en tu array tasks se repetirá 10 veces automáticamente.-->
+    <ion-item *ngFor="let task of tasks">
+      <ion-label [class.completed]="task.completed">
+        <!--Pinta el texto del título de la tarea actual.-->
+        {{ task.title }}
+      </ion-label>
+      <!--slot="end": Lo empuja a la derecha del todo.-->
+      <ion-checkbox
+        slot="end"
+        [(ngModel)]="task.completed"
+        (ionChange)="toggleTask(task)"
+      ></ion-checkbox>
+      <ion-button color="danger" fill="clear" (click)="deleteTask(task)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>
