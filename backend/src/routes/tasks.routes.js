@@ -3,28 +3,20 @@
 const express = require("express");
 const router = express.Router(); //router es como un pasillo especifico dentro del servidor (detallado en word)
 const Task = require("../models/task");
+const authMiddleware = require("../middleware/auth.middleware");
 
 // Obtener todas las tareas
-router.get("/tasks", async (req, res) => {
-  try {
-    const tasks = await Task.find();
-    res.json(tasks);
-  } catch (error) {
-    res.status(500).json({ error: "Error al obtener tareas" });
-  }
+router.get("/", authMiddleware, async (req, res) => {
+  const tasks = await Task.find({ userId: req.userId });
+  res.json(tasks);
 });
+
 // Agregar una nueva tarea
-router.post("/tasks", async (req, res) => {
-  try {
-    const { title } = req.body;
-    if (!title)
-      return res.status(400).json({ error: "El título es obligatorio" });
-    const newTask = new Task({ title });
-    await newTask.save();
-    res.json(newTask);
-  } catch (error) {
-    res.status(500).json({ error: "Error al crear la tarea" });
-  }
+router.post("/", authMiddleware, async (req, res) => {
+  const { title } = req.body;
+  const task = new Task({ title, completed: false, userId: req.userId });
+  await task.save();
+  res.status(201).json(task);
 });
 // Marcar una tarea como completada
 router.put("/tasks/:id", async (req, res) => {
