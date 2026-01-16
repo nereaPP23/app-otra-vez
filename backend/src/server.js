@@ -9,12 +9,16 @@ const PORT = process.env.PORT || 5000; //definir el puerto
 app.use(cors()); //aplicar el permiso de seguridad cors
 app.use(express.json()); // Permite recibir JSON en las solicitudes
 
+
 //conectar a la base de datos
 connectDB();
 
+const authRoutes = require("./routes/auth.routes");
+app.use("/api/auth", authRoutes);
+
 //importar ruta de tareas
 const tasksRoutes = require("./routes/tasks.routes"); //el ./ se refiere a buscar en esta misma carpeta 
-app.use("/api", tasksRoutes);
+app.use("/api/tasks", tasksRoutes);
 
 
 //ruta (endpoint) de la aplicación

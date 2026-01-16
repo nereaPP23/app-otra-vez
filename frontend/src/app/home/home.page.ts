@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService, Task } from '../services/task.service';
+import { AuthService } from '../services/auth.service';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +20,7 @@ export class HomePage implements OnInit {
   tasks: Task[] = []; //donde guardamos la lista de tareas que vienen de la base de datos
   newTaskTitle: string = ''; //donde se guarda lo que el usuario escribe en el input
 
-  constructor(private taskService: TaskService) {} //aquí se inyecta el servicio TaskService de task.service.ts
+  constructor(private taskService: TaskService , private authService: AuthService) {} //aquí se inyecta el servicio TaskService de task.service.ts
   ngOnInit() {
     //Es un evento automático. En cuanto la pantalla se termina de cargar, ejecuta loadTasks()
     this.loadTasks();
@@ -44,5 +45,8 @@ export class HomePage implements OnInit {
     this.taskService.deleteTask(task._id!).subscribe(() => {
       this.tasks = this.tasks.filter((t) => t._id !== task._id);
     });
+  }
+  logout() {
+    this.authService.logout();
   }
 }

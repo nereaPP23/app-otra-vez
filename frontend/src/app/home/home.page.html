@@ -1,9 +1,14 @@
-
 <ion-header>
-  <ion-toolbar> <!--Crea el contenedor de la barra de herramientas.-->
+  <ion-toolbar>
     <ion-title>Gestor de Tareas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" color="medium">
+        Cerrar sesión
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 <ion-content class="ion-padding">
 
   <!--Donde el usuario escribe las tareas nuevas.-->
@@ -33,3 +38,5 @@
     </ion-item>
   </ion-list>
 </ion-content>
+
+

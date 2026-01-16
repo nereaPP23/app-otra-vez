@@ -1,38 +1,47 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // Importación limpia
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-
-export interface Task { //word
-_id?: string; //el ? significa que el campo es opcional
-title: string;
-completed: boolean;
+export interface Task {
+  _id?: string;
+  title: string;
+  completed: boolean;
 }
 
-//cualquier página de tu app puede llamar a este servicio sin tener que crear una copia nueva cada vez.
 @Injectable({
   providedIn: 'root',
 })
-
-//aqui se usa el HttpClient para hablar con el servidor
 export class TaskService {
   private apiUrl = environment.apiUrl + '/tasks';
+
   constructor(private http: HttpClient) {}
 
+  // 1. FUNCIÓN AUXILIAR: Crea la llave de acceso (headers) automáticamente
+  private getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
+  // 2. AHORA TODAS LAS FUNCIONES USAN { headers }
   getTasks(): Observable<Task[]> {
-    return this.http.get<Task[]>(this.apiUrl);
+    const headers = this.getAuthHeaders();
+    return this.http.get<Task[]>(this.apiUrl, { headers });
   }
 
   addTask(title: string): Observable<Task> {
-    return this.http.post<Task>(this.apiUrl, { title });
+    const headers = this.getAuthHeaders(); // <-- Importante
+    return this.http.post<Task>(this.apiUrl, { title }, { headers });
   }
 
   toggleTask(id: string): Observable<Task> {
-    return this.http.put<Task>(`${this.apiUrl}/${id}`, {});
+    const headers = this.getAuthHeaders();
+    // En el PUT, los headers van como tercer argumento
+    return this.http.put<Task>(`${this.apiUrl}/${id}`, {}, { headers });
   }
 
-  deleteTask(id: string): Observable<any> { //any porque no te va a devolver nada
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteTask(id: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.apiUrl}/${id}`, { headers });
   }
 }
